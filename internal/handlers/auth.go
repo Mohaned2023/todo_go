@@ -22,17 +22,11 @@ func init() {
 func AuthRegister(w http.ResponseWriter, req *http.Request) {
 	var dto types.RegisterDto;
 	if err := json.NewDecoder(req.Body).Decode(&dto); err != nil {
-		panic(types.AppError{
-			Status: http.StatusBadRequest,
-			Message: "Body must be a valid json!",
-		});
+		panic(types.BadJSONBodyError);
 	}
 
 	if err := validate.Struct(dto); err != nil {
-		panic(types.AppError{
-			Status: http.StatusBadRequest,
-			Message: err.Error(),
-		});
+		panic(types.BodyValidationError);
 	}
 
 	newUser, err := services.UserCreate(storage.DBConn, &types.User{

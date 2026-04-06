@@ -29,7 +29,7 @@ func main() {
 	mux.HandleFunc("POST /v1/auth/register", handlers.AuthRegister);
 
 	wapperMux := middlewares.Logger(mux);
-	wapperMux = middlewares.EceptionHandler(wapperMux);
+	wapperMux = middlewares.ExceptionHandler(wapperMux);
 	
 	port := os.Getenv("APP_PORT");
 	if port == "" {
