@@ -1,11 +1,11 @@
 package middlewares
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"net/http"
 	"todo/internal/types"
+	"todo/internal/utils"
 	"todo/pkg/logger"
 )
 
@@ -18,9 +18,7 @@ func handleError(w http.ResponseWriter, err any) {
 		logger.Err(fmt.Errorf("%v", err));
 		appError.Map(types.InteralServerError)
 	}
-	w.Header().Set("Content-Type", "apliction-json");
-	w.WriteHeader(appError.Status);
-	json.NewEncoder(w).Encode(appError);
+	utils.WriteResponse(w, appError.Status, appError);
 }
 
 func ExceptionHandler(next http.Handler) http.Handler {

@@ -40,7 +40,5 @@ func AuthRegister(w http.ResponseWriter, req *http.Request) {
 		return;
 	}
 
-	w.Header().Set("Content-Type", "application-json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newUser);
+	utils.WriteResponse(w, http.StatusCreated, newUser);
 }
