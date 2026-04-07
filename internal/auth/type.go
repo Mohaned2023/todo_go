@@ -1,13 +1,17 @@
 package auth
 
-import "github.com/jmoiron/sqlx"
+import (
+	"github.com/jmoiron/sqlx"
+	"github.com/redis/go-redis/v9"
+)
 
 type AuthHandler struct {
-	db *sqlx.DB
+	db          *sqlx.DB
+	redisClient *redis.Client
 }
 
-func NewHandler(db *sqlx.DB) *AuthHandler {
-	return &AuthHandler{db}
+func NewHandler(db *sqlx.DB, redisClient *redis.Client) *AuthHandler {
+	return &AuthHandler{db, redisClient}
 }
 
 type RegisterDto struct {

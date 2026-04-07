@@ -25,11 +25,17 @@ func main() {
 	db := storage.InitDB(dbUrl);
 	defer db.Close();
 
+	redisHost := os.Getenv("REDIS_HOST")
+	if redisHost == "" {
+		panic("You must set REDIS_HOST!")
+	}
+	redisClient := storage.InitRedis(redisHost)
+	defer redisClient.Close();
 
 	rootMux := http.NewServeMux();
 	apiV1Mux := http.NewServeMux();
 
-	authHandler := auth.NewHandler(db)
+	authHandler := auth.NewHandler(db, redisClient)
 	auth.RegisterRoutes(apiV1Mux, authHandler)
 	
 	rootMux.Handle("/v1/", http.StripPrefix("/v1", apiV1Mux))

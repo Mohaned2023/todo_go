@@ -10,6 +10,7 @@ const (
 	InteralServerError AppErrorTypes = iota
 	BadJSONBodyError
 	BodyValidationError
+	UserFound
 )
 
 type AppError struct {
@@ -30,5 +31,8 @@ func (a *AppError) Map(e AppErrorTypes) {
 		case BodyValidationError:
 			a.Status = http.StatusBadRequest
 			a.Message = "Invalid body fields"
+		case UserFound:
+			a.Status = http.StatusFound
+			a.Message = "User already registerd"
 	}
 }

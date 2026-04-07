@@ -1,8 +1,16 @@
 package user
 
-import "github.com/jmoiron/sqlx"
+import (
+	"errors"
+	"todo/internal/apperr"
 
-func UserCreate(conn *sqlx.DB, user *User) (*User, error) {
+	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
+)
+
+// - Throws UserFound
+// - Throws any
+func UserCreate(conn *sqlx.DB, user *User) *User {
 	var insertedUser User;
 	d, err := conn.NamedQuery(`
 		INSERT INTO users (name, age, email, password)
@@ -12,7 +20,13 @@ func UserCreate(conn *sqlx.DB, user *User) (*User, error) {
 	if err == nil && d.Rows.Next() {
 		d.StructScan(&insertedUser);
 		d.Close();
-		return &insertedUser, nil;
+		return &insertedUser;
 	}
-	return nil, err;
+	var pgErr *pq.Error
+	if errors.As(err, &pgErr) {
+		if pgErr.Code == "23505" {
+			panic(apperr.UserFound)
+		}
+	}
+	panic(err)
 }

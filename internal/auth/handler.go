@@ -6,7 +6,6 @@ import (
 	"todo/internal/apperr"
 	"todo/internal/user"
 	"todo/internal/utils"
-	"todo/pkg/logger"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -18,6 +17,10 @@ func init() {
 	validate.RegisterValidation("password", utils.PasswordValidator);
 }
 
+// - Throws BadJSONBodyError
+// - Throws BadJSONBodyError
+// - Throws UserFound
+// - Throws any
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var dto RegisterDto;
 	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
@@ -28,16 +31,12 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		panic(apperr.BodyValidationError);
 	}
 
-	newUser, err := user.UserCreate(h.db, &user.User{
+	newUser := user.UserCreate(h.db, &user.User{
 		Name: dto.Name,
 		Age:  dto.Age,
 		Email: dto.Email,
 		Password: dto.Password,
 	});
-	if err != nil {
-		logger.Err(err.Error());
-		return;
-	}
 
 	utils.WriteResponse(w, http.StatusCreated, newUser);
 }
