@@ -4,19 +4,19 @@ import (
 	"fmt"
 
 	"net/http"
-	"todo/internal/types"
+	"todo/internal/apperr"
 	"todo/internal/utils"
 	"todo/pkg/logger"
 )
 
 
 func handleError(w http.ResponseWriter, err any) {
-	var appError types.AppError;
-	if e, ok := err.(types.AppErrorTypes); ok {
+	var appError apperr.AppError;
+	if e, ok := err.(apperr.AppErrorTypes); ok {
 		appError.Map(e);
 	} else {
 		logger.Err(fmt.Errorf("%v", err));
-		appError.Map(types.InteralServerError)
+		appError.Map(apperr.InteralServerError)
 	}
 	utils.WriteResponse(w, appError.Status, appError);
 }

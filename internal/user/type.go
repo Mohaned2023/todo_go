@@ -1,6 +1,19 @@
-package types
+package user
 
-import "time"
+import (
+	"time"
+
+	"github.com/jmoiron/sqlx"
+)
+
+type UserHandler struct {
+	db *sqlx.DB
+}
+
+func NewHandler(db *sqlx.DB) *UserHandler {
+	return &UserHandler{ db }
+}
+
 
 type User struct {
 	Id        int64     `db:"id"         json:"id"`

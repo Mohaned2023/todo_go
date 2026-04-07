@@ -1,13 +1,9 @@
-package services
+package user
 
-import (
-	"github.com/jmoiron/sqlx"
+import "github.com/jmoiron/sqlx"
 
-	"todo/internal/types"
-)
-
-func UserCreate(conn *sqlx.DB, user *types.User) (*types.User, error) {
-	var insertedUser types.User;
+func UserCreate(conn *sqlx.DB, user *User) (*User, error) {
+	var insertedUser User;
 	d, err := conn.NamedQuery(`
 		INSERT INTO users (name, age, email, password)
 		VALUES (:name, :age, :email, :password)

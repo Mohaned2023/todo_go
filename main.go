@@ -7,7 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"todo/internal/handlers"
+	"todo/internal/auth"
 	"todo/internal/middlewares"
 	"todo/internal/storage"
 )
@@ -22,13 +22,19 @@ func main() {
 	if dbUrl == "" {
 		panic("You must set DATABASE_URL!");
 	}
-	storage.InitDB(dbUrl);
-	defer storage.DBConn.Close();
+	db := storage.InitDB(dbUrl);
+	defer db.Close();
 
-	mux := http.NewServeMux();
-	mux.HandleFunc("POST /v1/auth/register", handlers.AuthRegister);
 
-	wapperMux := middlewares.Logger(mux);
+	rootMux := http.NewServeMux();
+	apiV1Mux := http.NewServeMux();
+
+	authHandler := auth.NewHandler(db)
+	auth.RegisterRoutes(apiV1Mux, authHandler)
+	
+	rootMux.Handle("/v1/", http.StripPrefix("/v1", apiV1Mux))
+
+	wapperMux := middlewares.Logger(rootMux);
 	wapperMux = middlewares.ExceptionHandler(wapperMux);
 	
 	port := os.Getenv("APP_PORT");

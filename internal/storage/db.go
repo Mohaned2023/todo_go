@@ -1,21 +1,19 @@
 package storage
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
-var DBConn *sqlx.DB;
-
-func InitDB(url string) {
-	var err error;
-	DBConn, err = sqlx.Connect("postgres", url);
+func InitDB(url string) *sqlx.DB {
+	DBConn, err := sqlx.Connect("postgres", url);
 	if err != nil {
-		log.Fatalf("Can not connect to database! %v", err)
+		panic(fmt.Errorf("%v", err))
 	}
 
 	DBConn.SetMaxOpenConns(20);
 	DBConn.SetMaxIdleConns(5);
+	return DBConn
 }

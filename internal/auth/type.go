@@ -1,4 +1,14 @@
-package types
+package auth
+
+import "github.com/jmoiron/sqlx"
+
+type AuthHandler struct {
+	db *sqlx.DB
+}
+
+func NewHandler(db *sqlx.DB) *AuthHandler {
+	return &AuthHandler{db}
+}
 
 type RegisterDto struct {
 	Name      string `json:"name"     validate:"required,min=3,max=255"`
