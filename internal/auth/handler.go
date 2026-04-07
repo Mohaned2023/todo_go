@@ -20,7 +20,8 @@ func init() {
 // - Throws BadJSONBodyError
 // - Throws BadJSONBodyError
 // - Throws UserFound
-// - Throws any
+// - Throws any, Database error.
+// - Throws any, The rand function can read.
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var dto RegisterDto;
 	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
@@ -35,7 +36,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		Name: dto.Name,
 		Age:  dto.Age,
 		Email: dto.Email,
-		Password: dto.Password,
+		Password: HashPassword(dto.Password),
 	});
 
 	utils.WriteResponse(w, http.StatusCreated, newUser);

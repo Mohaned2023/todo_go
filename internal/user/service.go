@@ -9,7 +9,7 @@ import (
 )
 
 // - Throws UserFound
-// - Throws any
+// - Throws any, Database error.
 func UserCreate(conn *sqlx.DB, user *User) *User {
 	var insertedUser User;
 	d, err := conn.NamedQuery(`
