@@ -10,3 +10,13 @@ func WriteResponse(w http.ResponseWriter, status int, data any) {
 	w.WriteHeader(status);
 	json.NewEncoder(w).Encode(data);
 }
+
+func WriteCookie(w http.ResponseWriter, n string, v string) {
+	http.SetCookie(w, &http.Cookie{
+		Name: n,
+		Value: v,
+		Path: "/",
+		MaxAge: 0,
+		HttpOnly:true,
+	})
+}

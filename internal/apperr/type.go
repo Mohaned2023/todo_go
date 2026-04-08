@@ -11,6 +11,8 @@ const (
 	BadJSONBodyError
 	BodyValidationError
 	UserFound
+	UserNotFound
+	UnauthorizedUser
 )
 
 type Exception struct {
@@ -41,5 +43,11 @@ func (a *AppError) Map(e Exception) {
 		case UserFound:
 			a.Status = http.StatusFound
 			a.Message = "User already registerd"
+		case UserNotFound:
+			a.Status = http.StatusNotFound
+			a.Message = "User not found"
+		case UnauthorizedUser:
+			a.Status = http.StatusUnauthorized
+			a.Message = "You are unauthorized"
 	}
 }

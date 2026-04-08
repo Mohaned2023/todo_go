@@ -1,6 +1,8 @@
 package user
 
 import (
+	"context"
+	"database/sql"
 	"errors"
 	"todo/internal/apperr"
 
@@ -32,4 +34,24 @@ func UserCreate(conn *sqlx.DB, user *User) *User {
 		}
 	}
 	panic(err)
+}
+
+func GetUser(ctx context.Context, conn *sqlx.DB, email string) *User {
+	var user User
+	err := conn.GetContext(ctx, &user, `
+		SELECT
+			*
+		FROM users
+		WHERE email = $1;
+	`, email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			panic(apperr.Exception{
+				Type: apperr.UserNotFound,
+				More: nil,
+			})
+		}
+		panic(err)
+	}
+	return &user
 }
