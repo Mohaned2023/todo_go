@@ -39,8 +39,14 @@ func main() {
 	auth.RegisterRoutes(apiV1Mux, authHandler)
 	
 	rootMux.Handle("/v1/", http.StripPrefix("/v1", apiV1Mux))
+	
+	origin := os.Getenv("CORS_ORIGIN")
+	if origin == "" {
+		panic("You must set CORS_ORIGIN!")
+	}
 
-	wapperMux := middlewares.Logger(rootMux);
+	wapperMux := middlewares.EnableCORS(rootMux, origin);
+	wapperMux = middlewares.Logger(wapperMux);
 	wapperMux = middlewares.ExceptionHandler(wapperMux);
 	
 	port := os.Getenv("APP_PORT");
