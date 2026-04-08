@@ -18,18 +18,24 @@ func init() {
 }
 
 // - Throws BadJSONBodyError
-// - Throws BadJSONBodyError
+// - Throws BodyValidationError
 // - Throws UserFound
 // - Throws any, Database error.
 // - Throws any, The rand function can read.
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var dto RegisterDto;
 	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
-		panic(apperr.BadJSONBodyError);
+		panic(apperr.Exception{
+			Type: apperr.BadJSONBodyError,
+			More: nil,
+		});
 	}
 
 	if err := validate.Struct(dto); err != nil {
-		panic(apperr.BodyValidationError);
+		panic(apperr.Exception{
+			Type: apperr.BodyValidationError,
+			More: nil,
+		});
 	}
 
 	newUser := user.UserCreate(h.db, &user.User{

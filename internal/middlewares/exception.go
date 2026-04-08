@@ -12,11 +12,14 @@ import (
 
 func handleError(w http.ResponseWriter, err any) {
 	var appError apperr.AppError;
-	if e, ok := err.(apperr.AppErrorTypes); ok {
+	if e, ok := err.(apperr.Exception); ok {
 		appError.Map(e);
 	} else {
 		logger.Err(fmt.Errorf("%v", err));
-		appError.Map(apperr.InteralServerError)
+		appError.Map(apperr.Exception{
+			Type: apperr.InteralServerError,
+			More: nil,
+		})
 	}
 	utils.WriteResponse(w, appError.Status, appError);
 }

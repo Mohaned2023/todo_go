@@ -13,15 +13,22 @@ const (
 	UserFound
 )
 
-type AppError struct {
-	Status  int    `json:"-"`
-	Message string `json:"message"`
-	Type    string `json:"type"`
+type Exception struct {
+	Type AppErrorTypes
+	More *map[string] any
 }
 
-func (a *AppError) Map(e AppErrorTypes) {
-	a.Type = fmt.Sprintf("TD%0*d", 4, e);
-	switch(e) {
+type AppError struct {
+	Status  int              `json:"-"`
+	Message string           `json:"message"`
+	Type    string           `json:"type"`
+	More    *map[string] any `json:"more"`
+}
+
+func (a *AppError) Map(e Exception) {
+	a.Type = fmt.Sprintf("TD%0*d", 4, e.Type);
+	a.More = e.More;
+	switch(e.Type) {
 		case InteralServerError:
 			a.Status = http.StatusInternalServerError
 			a.Message = "Internal Server Error"

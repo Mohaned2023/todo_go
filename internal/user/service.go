@@ -25,7 +25,10 @@ func UserCreate(conn *sqlx.DB, user *User) *User {
 	var pgErr *pq.Error
 	if errors.As(err, &pgErr) {
 		if pgErr.Code == "23505" {
-			panic(apperr.UserFound)
+			panic(apperr.Exception{
+				Type: apperr.UserFound,
+				More: nil,
+			})
 		}
 	}
 	panic(err)
